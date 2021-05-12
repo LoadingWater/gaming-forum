@@ -7,19 +7,18 @@ const app = express();
 const db = require('./models')
 const User = db.user
 
-//Routes
-const login = require('./routes/login.routes.js')
-const auth = require('./routes/auth.routes.js')
-const user = require('./routes/user.routes.js');
-//End of routes
 
-
-app.use(login)
-app.use(auth)
-app.use(user)
 app.use(cors());
+app.use(express.urlencoded({extended: false}));
 app.use(express.json());
-app.use(express.urlencoded({extended: true}));
+
+//Routes
+const signin = require('./routes/signin.route.js');
+const signup = require('./routes/signup.route.js');
+
+app.use(signin)
+app.use(signup)
+//End of routes
 
 app.use("*", (req, res) => {
     res.status(404).json({error: "Not found"})
@@ -40,8 +39,7 @@ mongoose.connect(
         })
     });
 
-const connection = mongoose.connection;
-connection.once('open', () => 
+mongoose.connection.once('open', () => 
 {
     console.log('MongoDB database connection established successfully');
 })
