@@ -1,11 +1,11 @@
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose')
-const db = require('./models')
 require ('dotenv').config();
 const port = process.env.PORT || PORT;
 const app = express();
-const User = require('./models/user.model')
+const db = require('./models')
+const User = db.user
 
 //Routes
 const login = require('./routes/login.routes.js')
@@ -73,4 +73,3 @@ function initial() {
         }
     });
   }
-
