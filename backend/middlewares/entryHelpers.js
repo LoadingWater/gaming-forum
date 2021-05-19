@@ -85,10 +85,12 @@ addUserToDB = (req, res) =>
       if (err) 
       {
         console.log("error", err);
+        res.status(500).send(err.message)
       }
       console.log("Added user to db.");
+      res.status(201).send("Added user " + req.query.username + " to db.")
     });
-    res.send("Added user " + req.query.username + " to db.")
+    
 };
 
 const enterHelpers = 
