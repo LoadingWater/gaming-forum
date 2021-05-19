@@ -1,26 +1,40 @@
-import React, { useEffect, useLayoutEffect } from "react";
+import React, { useContext, useEffect, useLayoutEffect } from "react";
 import {
   Button,
   Center,
-  Heading,
   LightMode,
   Text,
+  useToast,
   VStack,
 } from "@chakra-ui/react";
-import { useForm, useWatch } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import InputControl from "../../shared/ui/InputControl";
 import { Link } from "react-router-dom";
+import { ServiceContext } from "../../../context/http-service/serviceContext";
 
 function LoginPage() {
+  const { authService, setUserId } = useContext(ServiceContext);
+  const toast = useToast()
   const { control, handleSubmit } = useForm({
     defaultValues: {
-      login: "",
+      username: "",
+      email: "",
       password: "",
     },
   });
 
-  function submit(credentials) {
-    console.log("🚀 ~ file: Login.jsx ~ line 23 ~ submit ~ credentials", credentials)
+  async function submit(userForm) {
+      authService.login(userForm)
+      .then(user => setUserId(user.id))
+      .catch(e => {        
+        toast({
+          title: e.message,
+          status: "error",
+          isClosable: true,
+        })
+      })
+   
+     
   }
 
   return (
@@ -34,9 +48,18 @@ function LoginPage() {
           <VStack spacing="4" width="full">
             <InputControl
               control={control}
-              name="userNeme"
+              name="username"
               label="Account name"
               placeholder="Account name..."
+              rules={{ required: true }}
+            />
+
+            <InputControl
+              control={control}
+              name="email"
+              label="email"
+              placeholder="e-mail..."
+              type="email"
               rules={{ required: true }}
             />
 

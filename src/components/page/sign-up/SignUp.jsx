@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   Button,
   Center,
@@ -6,22 +6,42 @@ import {
   Text,
   VStack,
   Icon,
-  HStack
+  HStack,
+  useToast,
 } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
 import InputControl from "../../shared/ui/InputControl";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
+import { ServiceContext } from "../../../context/http-service/serviceContext";
 
 function SignUpPage() {
+  const { authService, setUserId } = useContext(ServiceContext);
+  const toast = useToast()
+  const history = useHistory();
   const { control, handleSubmit } = useForm({
     defaultValues: {
-      login: "",
+      username: "",
+      email: "",
       password: "",
     },
   });
 
-  function submit(credentials) {
-    console.log("🚀 ~ file: SignUp.jsx ~ line 21 ~ submit ~ credentials", credentials)
+  async function submit(userForm) {
+    try {
+      await authService.signup(userForm);
+      toast({
+        title: "account successfully created",
+        status: "success",
+        isClosable: true,
+      })
+      history.push('/');
+    } catch (e) {
+      toast({
+        title: e.message,
+        status: "error",
+        isClosable: true,
+      })
+    }
   }
 
   return (
@@ -35,7 +55,7 @@ function SignUpPage() {
           <VStack spacing="4" width="full">
             <InputControl
               control={control}
-              name="userNeme"
+              name="username"
               label="Account name"
               placeholder="Account name..."
               rules={{ required: true }}
@@ -46,7 +66,7 @@ function SignUpPage() {
               name="email"
               label="e-mail"
               placeholder="e-mail..."
-              type="password"
+              type="email"
               rules={{ required: true }}
             />
 
