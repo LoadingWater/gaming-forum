@@ -6,10 +6,8 @@ const entryHelpers = require('../middlewares/entryHelpers.js')
 
 router.post("/signup", (req, res, next) => 
 {   
-    if(entryHelpers.checkDublicatesSignup(req, res, next))
-    {
-        console.log("Free nickname.")
-    }
+    entryHelpers.checkDublicatesSignup(req, res)
+
     
 })
 
